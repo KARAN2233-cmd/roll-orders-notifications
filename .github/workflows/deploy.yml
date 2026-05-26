@@ -1,0 +1,63 @@
+- name: Inject secrets into files
+        run: |
+          python3 << 'PYEOF'
+          import os, sys
+
+          secrets = {
+            'FIREBASE_API_KEY':             os.environ.get('FIREBASE_API_KEY', ''),
+            'FIREBASE_AUTH_DOMAIN':         os.environ.get('FIREBASE_AUTH_DOMAIN', ''),
+            'FIREBASE_PROJECT_ID':          os.environ.get('FIREBASE_PROJECT_ID', ''),
+            'FIREBASE_STORAGE_BUCKET':      os.environ.get('FIREBASE_STORAGE_BUCKET', ''),
+            'FIREBASE_MESSAGING_SENDER_ID': os.environ.get('FIREBASE_MESSAGING_SENDER_ID', ''),
+            'FIREBASE_APP_ID':              os.environ.get('FIREBASE_APP_ID', ''),
+            'FIREBASE_VAPID_KEY':           os.environ.get('FIREBASE_VAPID_KEY', ''),
+            'GAS_URL':                      os.environ.get('GAS_URL', ''),
+          }
+
+          # Print status of each secret (first 6 chars only, safe)
+          all_ok = True
+          for name, val in secrets.items():
+            if not val:
+              print(f'❌ MISSING: {name}')
+              all_ok = False
+            else:
+              print(f'✅ {name} = {val[:6]}...')
+
+          if not all_ok:
+            print('\nAborting: one or more secrets are missing. Add them at:')
+            print('Settings → Secrets and variables → Actions → New repository secret')
+            sys.exit(1)
+
+          replacements = {
+            'PASTE_API_KEY':        secrets['FIREBASE_API_KEY'],
+            'PASTE_AUTH_DOMAIN':    secrets['FIREBASE_AUTH_DOMAIN'],
+            'PASTE_PROJECT_ID':     secrets['FIREBASE_PROJECT_ID'],
+            'PASTE_STORAGE_BUCKET': secrets['FIREBASE_STORAGE_BUCKET'],
+            'PASTE_SENDER_ID':      secrets['FIREBASE_MESSAGING_SENDER_ID'],
+            'PASTE_APP_ID':         secrets['FIREBASE_APP_ID'],
+            'PASTE_VAPID_KEY':      secrets['FIREBASE_VAPID_KEY'],
+            'PASTE_GAS_URL':        secrets['GAS_URL'],
+          }
+
+          for fname in ['index.html', 'firebase-messaging-sw.js']:
+            with open(fname, 'r') as f:
+              content = f.read()
+            for placeholder, value in replacements.items():
+              content = content.replace(placeholder, value)
+            remaining = [p for p in replacements if p in content]
+            if remaining:
+              print(f'❌ Unreplaced placeholders in {fname}: {remaining}')
+              sys.exit(1)
+            with open(fname, 'w') as f:
+              f.write(content)
+            print(f'✅ Done: {fname}')
+          PYEOF
+        env:
+          FIREBASE_API_KEY:             ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_AUTH_DOMAIN:         ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+          FIREBASE_PROJECT_ID:          ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_STORAGE_BUCKET:      ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+          FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+          FIREBASE_APP_ID:              ${{ secrets.FIREBASE_APP_ID }}
+          FIREBASE_VAPID_KEY:           ${{ secrets.FIREBASE_VAPID_KEY }}
+          GAS_URL:                      ${{ secrets.GAS_URL }}

@@ -13,12 +13,10 @@ jobs:
   deploy:
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Inject secrets into files
         run: |
           python3 << 'PYEOF'
@@ -51,15 +49,12 @@ jobs:
           FIREBASE_APP_ID:              ${{ secrets.FIREBASE_APP_ID }}
           FIREBASE_VAPID_KEY:           ${{ secrets.FIREBASE_VAPID_KEY }}
           GAS_URL:                      ${{ secrets.GAS_URL }}
-
       - name: Setup Pages
-        uses: actions/configure-pages@v4
-
+        uses: actions/configure-pages@v5
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
-
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

@@ -20,16 +20,21 @@ jobs:
 
       - name: Inject secrets into files
         run: |
-          sed -i "s|PASTE_API_KEY|$FIREBASE_API_KEY|g" index.html firebase-messaging-sw.js
-          sed -i "s|PASTE_AUTH_DOMAIN|$FIREBASE_AUTH_DOMAIN|g" index.html firebase-messaging-sw.js
-          sed -i "s|PASTE_PROJECT_ID|$FIREBASE_PROJECT_ID|g" index.html firebase-messaging-sw.js
-          sed -i "s|PASTE_STORAGE_BUCKET|$FIREBASE_STORAGE_BUCKET|g" index.html firebase-messaging-sw.js
-          sed -i "s|PASTE_SENDER_ID|$FIREBASE_MESSAGING_SENDER_ID|g" index.html firebase-messaging-sw.js
-          sed -i "s|PASTE_APP_ID|$FIREBASE_APP_ID|g" index.html firebase-messaging-sw.js
-          sed -i "s|PASTE_VAPID_KEY|$FIREBASE_VAPID_KEY|g" index.html firebase-messaging-sw.js
-          sed -i "s|PASTE_GAS_URL|$GAS_URL|g" index.html firebase-messaging-sw.js
-          echo "✅ Injection done"
-          grep -c "PASTE_" index.html && echo "❌ Placeholders still found!" && exit 1 || echo "✅ No placeholders remaining"
+          sed -i "s|PASTE_API_KEY|${FIREBASE_API_KEY}|g" index.html firebase-messaging-sw.js
+          sed -i "s|PASTE_AUTH_DOMAIN|${FIREBASE_AUTH_DOMAIN}|g" index.html firebase-messaging-sw.js
+          sed -i "s|PASTE_PROJECT_ID|${FIREBASE_PROJECT_ID}|g" index.html firebase-messaging-sw.js
+          sed -i "s|PASTE_STORAGE_BUCKET|${FIREBASE_STORAGE_BUCKET}|g" index.html firebase-messaging-sw.js
+          sed -i "s|PASTE_SENDER_ID|${FIREBASE_MESSAGING_SENDER_ID}|g" index.html firebase-messaging-sw.js
+          sed -i "s|PASTE_APP_ID|${FIREBASE_APP_ID}|g" index.html firebase-messaging-sw.js
+          sed -i "s|PASTE_VAPID_KEY|${FIREBASE_VAPID_KEY}|g" index.html firebase-messaging-sw.js
+          sed -i "s|PASTE_GAS_URL|${GAS_URL}|g" index.html firebase-messaging-sw.js
+          echo "--- Checking for remaining placeholders ---"
+          if grep -q "PASTE_" index.html; then
+            echo "❌ FAILED: Placeholders still in index.html"
+            grep "PASTE_" index.html
+            exit 1
+          fi
+          echo "✅ All placeholders replaced successfully"
         env:
           FIREBASE_API_KEY:             ${{ secrets.FIREBASE_API_KEY }}
           FIREBASE_AUTH_DOMAIN:         ${{ secrets.FIREBASE_AUTH_DOMAIN }}

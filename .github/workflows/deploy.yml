@@ -1,34 +1,65 @@
-- name: Inject secrets into files
-  run: |
-    python3 - <<'EOF'
-    import os
+name: Deploy Roll Orders Notifications
+on:
+  push:
+    branches: [ main ]
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    replacements = {
-      'PASTE_API_KEY'            : os.environ['FIREBASE_API_KEY'],
-      'PASTE_AUTH_DOMAIN'        : os.environ['FIREBASE_AUTH_DOMAIN'],
-      'PASTE_PROJECT_ID'         : os.environ['FIREBASE_PROJECT_ID'],
-      'PASTE_STORAGE_BUCKET'     : os.environ['FIREBASE_STORAGE_BUCKET'],
-      'PASTE_SENDER_ID'          : os.environ['FIREBASE_MESSAGING_SENDER_ID'],
-      'PASTE_APP_ID'             : os.environ['FIREBASE_APP_ID'],
-      'PASTE_VAPID_KEY'          : os.environ['FIREBASE_VAPID_KEY'],
-      'PASTE_GAS_URL'            : os.environ['GAS_URL'],
-    }
+      - name: Inject secrets into files
+        run: |
+          python3 << 'PYEOF'
+          import os
+          replacements = {
+            'PASTE_API_KEY':        os.environ['FIREBASE_API_KEY'],
+            'PASTE_AUTH_DOMAIN':    os.environ['FIREBASE_AUTH_DOMAIN'],
+            'PASTE_PROJECT_ID':     os.environ['FIREBASE_PROJECT_ID'],
+            'PASTE_STORAGE_BUCKET': os.environ['FIREBASE_STORAGE_BUCKET'],
+            'PASTE_SENDER_ID':      os.environ['FIREBASE_MESSAGING_SENDER_ID'],
+            'PASTE_APP_ID':         os.environ['FIREBASE_APP_ID'],
+            'PASTE_VAPID_KEY':      os.environ['FIREBASE_VAPID_KEY'],
+            'PASTE_GAS_URL':        os.environ['GAS_URL'],
+          }
+          for fname in ['index.html', 'firebase-messaging-sw.js']:
+            with open(fname, 'r') as f:
+              content = f.read()
+            for placeholder, value in replacements.items():
+              content = content.replace(placeholder, value)
+            with open(fname, 'w') as f:
+              f.write(content)
+            print('Done: ' + fname)
+          PYEOF
+        env:
+          FIREBASE_API_KEY:             ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_AUTH_DOMAIN:         ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+          FIREBASE_PROJECT_ID:          ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_STORAGE_BUCKET:      ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+          FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+          FIREBASE_APP_ID:              ${{ secrets.FIREBASE_APP_ID }}
+          FIREBASE_VAPID_KEY:           ${{ secrets.FIREBASE_VAPID_KEY }}
+          GAS_URL:                      ${{ secrets.GAS_URL }}
 
-    for fname in ['index.html', 'firebase-messaging-sw.js']:
-      with open(fname, 'r') as f:
-        content = f.read()
-      for placeholder, value in replacements.items():
-        content = content.replace(placeholder, value)
-      with open(fname, 'w') as f:
-        f.write(content)
-      print(f'Done: {fname}')
-    EOF
-  env:
-    FIREBASE_API_KEY:              ${{ secrets.FIREBASE_API_KEY }}
-    FIREBASE_AUTH_DOMAIN:          ${{ secrets.FIREBASE_AUTH_DOMAIN }}
-    FIREBASE_PROJECT_ID:           ${{ secrets.FIREBASE_PROJECT_ID }}
-    FIREBASE_STORAGE_BUCKET:       ${{ secrets.FIREBASE_STORAGE_BUCKET }}
-    FIREBASE_MESSAGING_SENDER_ID:  ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
-    FIREBASE_APP_ID:               ${{ secrets.FIREBASE_APP_ID }}
-    FIREBASE_VAPID_KEY:            ${{ secrets.FIREBASE_VAPID_KEY }}
-    GAS_URL:                       ${{ secrets.GAS_URL }}
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,7 +1,8 @@
 {
   "name": "Roll Orders Notifications",
   "short_name": "Roll Orders",
-  "start_url": "/roll-orders-notifications/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#0f0f0f",
   "theme_color": "#f59e0b",

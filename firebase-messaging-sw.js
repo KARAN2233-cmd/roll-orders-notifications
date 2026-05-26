@@ -13,13 +13,15 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage(function(payload) {
+  console.log('Background message:', payload);
   self.registration.showNotification(
     payload.notification.title,
     {
-      body  : payload.notification.body,
-      icon  : 'https://i.imgur.com/8vPMBhQ.png',
-      badge : 'https://i.imgur.com/8vPMBhQ.png',
-      requireInteraction: true
+      body              : payload.notification.body,
+      icon              : 'https://i.imgur.com/8vPMBhQ.png',
+      badge             : 'https://i.imgur.com/8vPMBhQ.png',
+      requireInteraction: true,
+      vibrate           : [200, 100, 200]
     }
   );
 });

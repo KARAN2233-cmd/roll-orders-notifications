@@ -18,72 +18,111 @@
       border-radius: 16px; padding: 36px;
       max-width: 440px; width: 100%; text-align: center;
     }
-    .icon { font-size: 52px; margin-bottom: 16px; }
+    .icon { font-size: 52px; margin-bottom: 12px; }
     h1 { font-size: 22px; font-weight: 800; margin-bottom: 8px; color: #f59e0b; }
-    p  { font-size: 14px; color: #6b7280; margin-bottom: 24px; line-height: 1.6; }
-    select, input {
-      width: 100%; padding: 12px 14px; margin-bottom: 12px;
-      background: #242424; border: 1px solid #2e2e2e;
-      border-radius: 8px; color: #f0ede8; font-size: 14px;
+    .tagline { font-size: 13px; color: #6b7280; margin-bottom: 24px; line-height: 1.6; }
+    .platform-badge {
+      display: inline-block; background: #242424; border: 1px solid #2e2e2e;
+      border-radius: 20px; padding: 4px 14px; font-size: 11px;
+      color: #6b7280; margin-bottom: 20px; letter-spacing: 0.05em;
     }
+    .ios-note {
+      margin-bottom: 16px; padding: 12px 14px;
+      background: rgba(245,158,11,.08); border: 1px solid rgba(245,158,11,.25);
+      border-radius: 8px; font-size: 12px; color: #f59e0b;
+      text-align: left; line-height: 1.7; display: none;
+    }
+    label {
+      display: block; font-size: 11px; text-align: left;
+      color: #6b7280; margin-bottom: 5px;
+      text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    input[type="email"] {
+      width: 100%; padding: 12px 14px; margin-bottom: 16px;
+      background: #242424; border: 1.5px solid #2e2e2e;
+      border-radius: 8px; color: #f0ede8; font-size: 14px;
+      transition: border-color .2s;
+    }
+    input[type="email"]:focus { outline: none; border-color: #f59e0b; }
+    input[type="email"]::placeholder { color: #4b5563; }
     .btn {
       background: #f59e0b; color: #000; border: none;
       border-radius: 10px; padding: 14px 28px;
       font-size: 15px; font-weight: 700; cursor: pointer;
-      width: 100%; margin-bottom: 12px; transition: background .2s;
+      width: 100%; transition: background .2s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
     }
     .btn:hover:not(:disabled) { background: #fbbf24; }
     .btn:disabled { opacity: .5; cursor: not-allowed; }
     .status {
       margin-top: 16px; padding: 12px 16px; border-radius: 8px;
       font-size: 13px; display: none; text-align: left;
-      line-height: 1.6; white-space: pre-line;
+      line-height: 1.7; white-space: pre-line;
     }
-    .success { background: rgba(34,197,94,.15);  color: #22c55e; border: 1px solid rgba(34,197,94,.3); }
-    .error   { background: rgba(239,68,68,.15);  color: #ef4444; border: 1px solid rgba(239,68,68,.3); }
-    .info    { background: rgba(96,165,250,.15); color: #60a5fa; border: 1px solid rgba(96,165,250,.3); }
-    .warn    { background: rgba(245,158,11,.15); color: #f59e0b; border: 1px solid rgba(245,158,11,.3); }
-    .ios-note {
-      margin-bottom: 16px; padding: 12px 14px;
-      background: rgba(245,158,11,.08); border: 1px solid rgba(245,158,11,.2);
-      border-radius: 8px; font-size: 12px; color: #f59e0b;
-      text-align: left; line-height: 1.6; display: none;
+    .success { background: rgba(34,197,94,.12);  color: #22c55e; border: 1px solid rgba(34,197,94,.3); }
+    .error   { background: rgba(239,68,68,.12);  color: #ef4444; border: 1px solid rgba(239,68,68,.3); }
+    .info    { background: rgba(96,165,250,.12); color: #60a5fa; border: 1px solid rgba(96,165,250,.3); }
+    .warn    { background: rgba(245,158,11,.12); color: #f59e0b; border: 1px solid rgba(245,158,11,.3); }
+    .divider { border: none; border-top: 1px solid #2e2e2e; margin: 20px 0; }
+    .who-gets {
+      text-align: left; margin-bottom: 20px;
     }
-    .platform-badge {
-      display: inline-block; background: #242424; border: 1px solid #2e2e2e;
-      border-radius: 20px; padding: 4px 12px; font-size: 11px;
-      color: #6b7280; margin-bottom: 16px;
+    .who-gets p {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+      color: #6b7280; margin-bottom: 8px;
     }
-    label { display: block; font-size: 11px; text-align: left;
-            color: #6b7280; margin-bottom: 4px; text-transform: uppercase;
-            letter-spacing: 0.08em; }
+    .user-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #242424; border: 1px solid #2e2e2e;
+      border-radius: 20px; padding: 4px 10px;
+      font-size: 11px; color: #9ca3af; margin: 3px;
+    }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: #f59e0b; }
   </style>
 </head>
 <body>
 <div class="card">
+
   <div class="icon">⬡</div>
   <h1>Roll Orders Alerts</h1>
-  <div class="platform-badge" id="platform-badge">Detecting…</div>
-  <p>Enter your email and enable notifications to receive instant order alerts on this device.</p>
+  <div class="platform-badge" id="platform-badge">Detecting platform…</div>
+  <p class="tagline">Enter your Roll Orders email and tap Enable to receive instant order notifications on this device.</p>
 
+  <!-- iOS install hint -->
   <div class="ios-note" id="ios-note">
-    📱 <strong>iPhone/iPad:</strong> First tap Share ⎋ → <strong>Add to Home Screen</strong>, then reopen and enable.
+    📱 <strong>iPhone / iPad:</strong> You must first add this page to your Home Screen.<br>
+    Tap <strong>Share ⎋</strong> → <strong>Add to Home Screen</strong> → open the installed app → then tap Enable.
   </div>
 
-  <label>Your Email</label>
-  <input type="email" id="email-input" placeholder="you@example.com" />
+  <!-- Who gets what -->
+  <div class="who-gets">
+    <p>Notifications are sent to</p>
+    <span class="user-chip"><span class="dot"></span>Mahender — Check Stock</span>
+    <span class="user-chip"><span class="dot"></span>Ashok — Dispatch / Delivery</span>
+    <span class="user-chip"><span class="dot"></span>Pawan — Production</span>
+    <span class="user-chip"><span class="dot"></span>Prakash — Material Send</span>
+    <span class="user-chip"><span class="dot"></span>Rajini — Confirm Buyer</span>
+  </div>
+
+  <hr class="divider" />
+
+  <label for="email-input">Your Roll Orders Email</label>
+  <input type="email" id="email-input" placeholder="yourname@example.com" autocomplete="email" />
 
   <button class="btn" id="enable-btn" onclick="enableNotifications()">
     🔔 Enable Notifications
   </button>
 
   <div class="status" id="status-box"></div>
+
 </div>
 
+<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
 
 <script>
+// ── Config (secrets injected by GitHub Actions) ───────
 const FIREBASE_CONFIG = {
   apiKey            : 'PASTE_API_KEY',
   authDomain        : 'PASTE_AUTH_DOMAIN',
@@ -92,118 +131,166 @@ const FIREBASE_CONFIG = {
   messagingSenderId : 'PASTE_SENDER_ID',
   appId             : 'PASTE_APP_ID'
 };
-const VAPID_KEY      = 'PASTE_VAPID_KEY';
-// ← Your Roll Orders Apps Script deployed URL
-const SAVE_TOKEN_URL = 'PASTE_YOUR_GAS_DEPLOYED_URL';
+const VAPID_KEY  = 'PASTE_VAPID_KEY';
+const GAS_URL    = 'PASTE_GAS_URL';
 
-// Detect platform
-const ua         = navigator.userAgent;
-const isIOS      = /iphone|ipad|ipod/i.test(ua);
-const isAndroid  = /android/i.test(ua);
+// ── Valid Roll Orders emails ───────────────────────────
+const VALID_EMAILS = [
+  'mis.ajmerind@gmail.com',
+  'ajmerind@gmail.com',
+  'bsr7.ajmerind@gmail.com',
+  'dispatch.ajmerind@gmail.com',
+  'press.ajmerind@gmail.com',
+  'purchase.ajmerind1@gmail.com',
+  'office.ajmerind@gmail.com'
+];
+
+// ── Platform detection ────────────────────────────────
+const ua           = navigator.userAgent;
+const isIOS        = /iphone|ipad|ipod/i.test(ua);
+const isAndroid    = /android/i.test(ua);
 const isStandalone = window.matchMedia('(display-mode: standalone)').matches
                   || window.navigator.standalone === true;
 
 document.getElementById('platform-badge').textContent =
-  isIOS ? (isStandalone ? 'iOS — Installed ✓' : 'iOS Safari')
-  : isAndroid ? 'Android' : 'Desktop';
+  isIOS     ? (isStandalone ? '📱 iOS — Installed ✓' : '📱 iOS Safari')
+  : isAndroid ? '🤖 Android'
+  : '🖥️ Desktop';
 
 if (isIOS && !isStandalone) {
   document.getElementById('ios-note').style.display = 'block';
 }
 
+// ── Check browser support ─────────────────────────────
 if (!('Notification' in window) || !('serviceWorker' in navigator)) {
   document.getElementById('enable-btn').disabled = true;
-  showStatus('error', isIOS && !isStandalone
-    ? '❌ Add to Home Screen first (see above).'
-    : '❌ Push notifications not supported on this browser.'
+  showStatus('error',
+    isIOS && !isStandalone
+      ? '❌ Add this page to Home Screen first (see instructions above).'
+      : '❌ Push notifications are not supported on this browser.'
   );
 }
 
+// ── Init Firebase ─────────────────────────────────────
 firebase.initializeApp(FIREBASE_CONFIG);
 const messaging = firebase.messaging();
 
-navigator.serviceWorker.register('firebase-messaging-sw.js')
-  .then(reg => console.log('✅ SW registered:', reg.scope))
-  .catch(err => showStatus('error', '❌ Service Worker failed: ' + err.message));
+// ── Register Service Worker ───────────────────────────
+let swReady = null;
+if ('serviceWorker' in navigator) {
+  swReady = navigator.serviceWorker
+    .register('firebase-messaging-sw.js')
+    .then(reg => {
+      console.log('✅ SW registered:', reg.scope);
+      return reg;
+    })
+    .catch(err => {
+      console.error('❌ SW failed:', err);
+      showStatus('error', '❌ Service Worker failed: ' + err.message);
+    });
+}
 
+// ── Main: Enable Notifications ────────────────────────
 async function enableNotifications() {
   const btn   = document.getElementById('enable-btn');
   const email = document.getElementById('email-input').value.trim().toLowerCase();
 
+  // Validate email
   if (!email || !email.includes('@')) {
-    showStatus('error', '❌ Please enter a valid email address.');
+    showStatus('error', '❌ Please enter your Roll Orders email address.');
+    return;
+  }
+  if (VALID_EMAILS.indexOf(email) === -1) {
+    showStatus('error', '❌ This email is not registered in Roll Orders.\n\nPlease use the email you log in to Roll Orders with.');
     return;
   }
 
-  // Check this email is a valid Roll Orders user
-  const validEmails = [
-    'mis.ajmerind@gmail.com',
-    'ajmerind@gmail.com',
-    'bsr7.ajmerind@gmail.com',         // Mahender — Check Stock
-    'dispatch.ajmerind@gmail.com',      // Ashok — Update/Dispatch/Delivery/Other
-    'press.ajmerind@gmail.com',         // Pawan — Production
-    'purchase.ajmerind1@gmail.com',     // Prakash — Material Send
-    'office.ajmerind@gmail.com'         // Rajini — Confirm Buyer
-  ];
-  if (validEmails.indexOf(email) === -1) {
-    showStatus('error', '❌ This email is not registered in Roll Orders.');
-    return;
-  }
-
+  // iOS must be installed first
   if (isIOS && !isStandalone) {
-    showStatus('warn', '📱 Please add this page to your Home Screen first, then reopen and tap Enable.');
+    showStatus('warn', '📱 Please add this page to your Home Screen first.\nTap Share ⎋ → Add to Home Screen → reopen → then tap Enable.');
     return;
   }
 
   btn.disabled    = true;
-  btn.textContent = 'Setting up…';
-  showStatus('info', '⏳ Requesting notification permission…');
+  btn.innerHTML   = '⏳ Setting up…';
 
   try {
+    // Step 1: Request permission
+    showStatus('info', '⏳ Step 1/4 — Requesting notification permission…');
     const permission = await Notification.requestPermission();
     if (permission !== 'granted') {
       showStatus('error',
-        '❌ Permission denied.\n\nAndroid: Tap 🔒 in address bar → Notifications → Allow.\niPhone: Settings → Safari → this site → Notifications → Allow.'
+        '❌ Notification permission was denied.\n\n' +
+        '👉 Android: Tap the 🔒 icon in the browser address bar → Site Settings → Notifications → Allow.\n\n' +
+        '👉 iPhone: Settings app → Safari → [this website] → Notifications → Allow.'
       );
-      btn.disabled = false; btn.textContent = '🔔 Enable Notifications';
+      btn.disabled  = false;
+      btn.innerHTML = '🔔 Enable Notifications';
       return;
     }
 
-    showStatus('info', '⏳ Getting device token…');
+    // Step 2: Wait for service worker
+    showStatus('info', '⏳ Step 2/4 — Loading service worker…');
     const swReg = await navigator.serviceWorker.ready;
-    const token = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg });
+
+    // Step 3: Get FCM token
+    showStatus('info', '⏳ Step 3/4 — Getting device token from Firebase…');
+    const token = await messaging.getToken({
+      vapidKey                  : VAPID_KEY,
+      serviceWorkerRegistration : swReg
+    });
 
     if (!token) {
-      showStatus('error', '❌ Could not get FCM token. Ensure the site is on HTTPS.');
-      btn.disabled = false; btn.textContent = '🔔 Enable Notifications';
+      showStatus('error', '❌ Could not get FCM token.\nMake sure you are on HTTPS and try again.');
+      btn.disabled  = false;
+      btn.innerHTML = '🔔 Enable Notifications';
       return;
     }
+    console.log('FCM token:', token.substring(0, 30) + '...');
 
-    showStatus('info', '⏳ Saving to server…');
-    const url = SAVE_TOKEN_URL + '?action=saveToken&email=' + encodeURIComponent(email) + '&token=' + encodeURIComponent(token);
-    await fetch(url, { method: 'GET', mode: 'no-cors' });
+    // Step 4: Save token to Apps Script
+    showStatus('info', '⏳ Step 4/4 — Saving to server…');
+    const saveUrl = GAS_URL + '?action=saveToken'
+      + '&email=' + encodeURIComponent(email)
+      + '&token=' + encodeURIComponent(token);
+    await fetch(saveUrl, { method: 'GET', mode: 'no-cors' });
 
-    showStatus('success', '✅ Done! You will now receive Roll Orders notifications on this device.\n\nEmail: ' + email);
-    btn.textContent = '✅ Notifications Active';
+    // Done
+    showStatus('success',
+      '✅ Notifications enabled successfully!\n\n' +
+      '📧 Email: ' + email + '\n' +
+      '📱 Device: ' + document.getElementById('platform-badge').textContent + '\n\n' +
+      'You will now receive Roll Orders alerts on this device.'
+    );
+    btn.innerHTML = '✅ Notifications Active';
 
   } catch(err) {
-    showStatus('error', '❌ ' + err.message);
-    btn.disabled = false; btn.textContent = '🔔 Enable Notifications';
+    console.error(err);
+    showStatus('error', '❌ Error: ' + err.message);
+    btn.disabled  = false;
+    btn.innerHTML = '🔔 Enable Notifications';
   }
 }
 
+// ── Foreground message handler ────────────────────────
 messaging.onMessage(payload => {
+  console.log('Foreground message:', payload);
   const n = payload.notification;
-  if (Notification.permission === 'granted' && n) {
-    new Notification(n.title, { body: n.body, icon: 'https://i.imgur.com/8vPMBhQ.png' });
+  if (n && Notification.permission === 'granted') {
+    new Notification(n.title, {
+      body  : n.body,
+      icon  : 'https://i.imgur.com/8vPMBhQ.png',
+      badge : 'https://i.imgur.com/8vPMBhQ.png'
+    });
   }
 });
 
+// ── UI helper ─────────────────────────────────────────
 function showStatus(type, msg) {
-  const el = document.getElementById('status-box');
-  el.className = 'status ' + type;
-  el.style.display = 'block';
-  el.textContent = msg;
+  const el          = document.getElementById('status-box');
+  el.className      = 'status ' + type;
+  el.style.display  = 'block';
+  el.textContent    = msg;
 }
 </script>
 </body>

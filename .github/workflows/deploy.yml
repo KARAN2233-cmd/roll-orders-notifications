@@ -1,55 +1,73 @@
-
-name: Deploy Roll Orders Notifications
+name: Check Secrets Configuration
 
 on:
   push:
     branches: [ main ]
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  workflow_dispatch:
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  check-secrets:
     runs-on: ubuntu-latest
     steps:
-
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Inject secrets into files
+      - name: Check Firebase Secrets
         run: |
-          sed -i "s|PASTE_API_KEY|${{ secrets.FIREBASE_API_KEY }}|g"                         index.html
-          sed -i "s|PASTE_AUTH_DOMAIN|${{ secrets.FIREBASE_AUTH_DOMAIN }}|g"                 index.html
-          sed -i "s|PASTE_PROJECT_ID|${{ secrets.FIREBASE_PROJECT_ID }}|g"                   index.html
-          sed -i "s|PASTE_STORAGE_BUCKET|${{ secrets.FIREBASE_STORAGE_BUCKET }}|g"           index.html
-          sed -i "s|PASTE_SENDER_ID|${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}|g"           index.html
-          sed -i "s|PASTE_APP_ID|${{ secrets.FIREBASE_APP_ID }}|g"                           index.html
-          sed -i "s|PASTE_VAPID_KEY|${{ secrets.FIREBASE_VAPID_KEY }}|g"                     index.html
-          sed -i "s|PASTE_GAS_URL|${{ secrets.GAS_URL }}|g"                                  index.html
-          sed -i "s|PASTE_API_KEY|${{ secrets.FIREBASE_API_KEY }}|g"                         firebase-messaging-sw.js
-          sed -i "s|PASTE_AUTH_DOMAIN|${{ secrets.FIREBASE_AUTH_DOMAIN }}|g"                 firebase-messaging-sw.js
-          sed -i "s|PASTE_PROJECT_ID|${{ secrets.FIREBASE_PROJECT_ID }}|g"                   firebase-messaging-sw.js
-          sed -i "s|PASTE_STORAGE_BUCKET|${{ secrets.FIREBASE_STORAGE_BUCKET }}|g"           firebase-messaging-sw.js
-          sed -i "s|PASTE_SENDER_ID|${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}|g"           firebase-messaging-sw.js
-          sed -i "s|PASTE_APP_ID|${{ secrets.FIREBASE_APP_ID }}|g"                           firebase-messaging-sw.js
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.'
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          echo "Checking if all required Firebase secrets are configured..."
+          
+          if [ -z "${{ secrets.FIREBASE_API_KEY }}" ]; then
+            echo "❌ FIREBASE_API_KEY is not set"
+            exit 1
+          else
+            echo "✓ FIREBASE_API_KEY is configured"
+          fi
+          
+          if [ -z "${{ secrets.FIREBASE_AUTH_DOMAIN }}" ]; then
+            echo "❌ FIREBASE_AUTH_DOMAIN is not set"
+            exit 1
+          else
+            echo "✓ FIREBASE_AUTH_DOMAIN is configured"
+          fi
+          
+          if [ -z "${{ secrets.FIREBASE_PROJECT_ID }}" ]; then
+            echo "❌ FIREBASE_PROJECT_ID is not set"
+            exit 1
+          else
+            echo "✓ FIREBASE_PROJECT_ID is configured"
+          fi
+          
+          if [ -z "${{ secrets.FIREBASE_STORAGE_BUCKET }}" ]; then
+            echo "❌ FIREBASE_STORAGE_BUCKET is not set"
+            exit 1
+          else
+            echo "✓ FIREBASE_STORAGE_BUCKET is configured"
+          fi
+          
+          if [ -z "${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}" ]; then
+            echo "❌ FIREBASE_MESSAGING_SENDER_ID is not set"
+            exit 1
+          else
+            echo "✓ FIREBASE_MESSAGING_SENDER_ID is configured"
+          fi
+          
+          if [ -z "${{ secrets.FIREBASE_APP_ID }}" ]; then
+            echo "❌ FIREBASE_APP_ID is not set"
+            exit 1
+          else
+            echo "✓ FIREBASE_APP_ID is configured"
+          fi
+          
+          if [ -z "${{ secrets.FIREBASE_VAPID_KEY }}" ]; then
+            echo "❌ FIREBASE_VAPID_KEY is not set"
+            exit 1
+          else
+            echo "✓ FIREBASE_VAPID_KEY is configured"
+          fi
+          
+          if [ -z "${{ secrets.GAS_URL }}" ]; then
+            echo "❌ GAS_URL is not set"
+            exit 1
+          else
+            echo "✓ GAS_URL is configured"
+          fi
+          
+          echo ""
+          echo "✅ All required secrets are configured!"

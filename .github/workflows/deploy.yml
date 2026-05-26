@@ -1,26 +1,7 @@
-name: Deploy Roll Orders Notifications
-on:
-  push:
-    branches: [ main ]
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-jobs:
-  deploy:
-    environment:
-      name: github-pages
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Inject secrets into files
+- name: Inject secrets into files
         run: |
           python3 << 'PYEOF'
-          import os
+          import os, sys
           replacements = {
             'PASTE_API_KEY':        os.environ['FIREBASE_API_KEY'],
             'PASTE_AUTH_DOMAIN':    os.environ['FIREBASE_AUTH_DOMAIN'],
@@ -31,14 +12,27 @@ jobs:
             'PASTE_VAPID_KEY':      os.environ['FIREBASE_VAPID_KEY'],
             'PASTE_GAS_URL':        os.environ['GAS_URL'],
           }
+
+          # Fail fast if any secret is empty
+          for key, val in replacements.items():
+            if not val or val.strip() == '':
+              print(f'ERROR: Secret for {key} is empty!', flush=True)
+              sys.exit(1)
+
           for fname in ['index.html', 'firebase-messaging-sw.js']:
             with open(fname, 'r') as f:
               content = f.read()
+            original = content
             for placeholder, value in replacements.items():
               content = content.replace(placeholder, value)
+            # Verify replacements actually happened
+            remaining = [p for p in replacements if p in content]
+            if remaining:
+              print(f'ERROR: Placeholders still found in {fname}: {remaining}', flush=True)
+              sys.exit(1)
             with open(fname, 'w') as f:
               f.write(content)
-            print('Done: ' + fname)
+            print(f'Done: {fname}')
           PYEOF
         env:
           FIREBASE_API_KEY:             ${{ secrets.FIREBASE_API_KEY }}
@@ -49,12 +43,3 @@ jobs:
           FIREBASE_APP_ID:              ${{ secrets.FIREBASE_APP_ID }}
           FIREBASE_VAPID_KEY:           ${{ secrets.FIREBASE_VAPID_KEY }}
           GAS_URL:                      ${{ secrets.GAS_URL }}
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.'
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5
